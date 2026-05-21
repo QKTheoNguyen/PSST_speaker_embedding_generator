@@ -1,39 +1,59 @@
-## Adapting General Disentanglement-Based Speaker Anonymization for Enhanced Emotion Preservation
+## PSST speaker embedding generator
 
-This is an implementation of the paper - [Adapting General Disentanglement-Based Speaker Anonymization for Enhanced Emotion Preservation](https://arxiv.org/abs/2408.05928)
+This repository is based on an implementation of the following paper as a baseline- [Adapting General Disentanglement-Based Speaker Anonymization for Enhanced Emotion Preservation](https://arxiv.org/abs/2408.05928)
 
-The authors are Xiaoxiao Miao, Yuxiang Zhang, Xin Wang, Natalia Tomashenko, Donny Cheng Lock Soh, Ian Mcloughlin
-
-
-Audio samples can be found here: https://xiaoxiaomiao323.github.io/ohnn-emo-audio/
-
+In this work we explore speech anonymization system's speaker embedding anonymization. We propose 2 (for now) speaker generator models, based on flow-matching and GANs.
 
 ## How to run
 
-`git clone https://github.com/xiaoxiaomiao323/emotion-compensation.git`
+`git clone https://github.com/QKTheoNguyen/PSST_speaker_embedding_generator.git`
 
-`cd emotion-compensation`
-
-- Training the svm boundary of vectors
-
-`bash train_inter_emo_esd_msp.sh`
-
-- Editing vector
-
-`bash edit_inter_emo_pre_esd_msp_sad1.sh`
-
-- Generate anonymized speech using edited vectors, 
-
-`cd gen`
+`cd emotion-compensation/gen`
 
 `bash scripts/install.sh`
 
-`bash 01_demo.sh` this will use original data as input, please download savee and IEMOCAP original dataset and change data/*/wav.scp to your data directory before you run this command.
+fairseq is deprecated so you have to install it elsewhere and modify manually the `gen/env.sh` script with your fairseq path
+
+### Flow-based speaker embedding generator
+
+- Train flow-matching speaker embedding generator
+
+`bash script/01_train_flow.sh`
+
+- Generate flow-based pseudo-speaker embedding
+
+`bash script/02_run_flow.sh`
+
+- Generate anonymized speech using edited pseudo-speaker embeddings, 
+
+`bash script/03_demo.sh`
+
+### GAN-based speaker embedding generator
+
+- Train flow-matching speaker embedding generator
+
+`bash script/01_train_gan.sh`
+
+- Generate flow-based pseudo-speaker embedding
+
+`bash script/02_run_gan.sh`
+
+- Generate anonymized speech using edited pseudo-speaker embeddings, 
+
+`bash script/03_demo.sh`
+
+### Run all
+
+You may also run all with
+
+`bash script/train_run_gen.sh`
+
 
 
 
 ## Acknowledgments
-This study is supported by JST, PRESTO Grant JPMJPR23P9, Japan, Ministry of Education, Singapore, under its Academic Research Tier 1 (R-R13-A405-0005) and its SIT's Ignition grant (STEM) (R-IE3-A405-0005) andin part by National Research Foundation Singapore for (a) AI Singapore Programme (award AISG2-GC-2022-004) (b) with Infocomm Media Development Authority (Digital Trust Centre award DTC-RGC-07).
+This work was funded by the European Union’s Horizon Europe research and innovation programme grant No 101168193.
+
 ## License
 The whole project follows the Attribution-NonCommercial 4.0 International License
 
