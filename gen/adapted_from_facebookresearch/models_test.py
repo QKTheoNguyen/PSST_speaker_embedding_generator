@@ -13,6 +13,7 @@ import torch.nn as nn
 from torch.nn import Conv1d, ConvTranspose1d, AvgPool1d, Conv2d
 from torch.nn.utils import weight_norm, remove_weight_norm, spectral_norm
 import math
+import numpy as np
 from utils import init_weights, get_padding, AttrDict
 import fairseq
 import sys,os
@@ -364,22 +365,32 @@ class latentGenerator(Generator):
             # extract xvector
             # read anon xvector
             xv = read_raw_mat(xv_path, 192)
-            xv = torch.FloatTensor(xv).unsqueeze(0).to(x.device) 
+            # Ensure xv is 1D array [192], then reshape to [1, 192, 1]
+            xv = np.atleast_1d(xv).flatten()  # Flatten to 1D if needed
+            xv = torch.FloatTensor(xv).to(x.device)  # [192]
+            xv = xv.unsqueeze(0).unsqueeze(-1)  # [1, 192, 1]
+            
             x = F.layer_norm(x, x.shape)
             xv = F.layer_norm(xv, xv.shape)
             x = x.transpose(2, 1)
-            xv = xv.transpose(2, 1)
+            # xv is already [batch, features, time] after unsqueeze, don't transpose
 
             # ssl model hop_size=320, but losss 1 dim, need to add
             x = torch.nn.functional.pad(x, (0, 1), 'replicate')
         if self.f0:
-            if x.shape[-1] < kwargs['f0'].shape[-1]:
-                x = self._upsample(x, kwargs['f0'].shape[-1])
+            f0 = kwargs['f0']
+            # Ensure f0 is 3D: [batch, channels, time]
+            if f0.dim() == 4:
+                f0 = f0.squeeze(1)
+            if x.shape[-1] < f0.shape[-1]:
+                x = self._upsample(x, f0.shape[-1])
             else:
-                kwargs['f0'] = self._upsample(kwargs['f0'], x.shape[-1])
-            x = torch.cat([x, kwargs['f0']], dim=1)
+                f0 = self._upsample(f0, x.shape[-1])
+            x = torch.cat([x, f0], dim=1)
 
-        xv = self._upsample(xv, x.shape[-1])
+        # Ensure xv is upsampled to match x's time dimension
+        if xv.shape[-1] != x.shape[-1]:
+            xv = self._upsample(xv, x.shape[-1])
         x = torch.cat([x, xv], dim=1)
 
         return super().forward(x)

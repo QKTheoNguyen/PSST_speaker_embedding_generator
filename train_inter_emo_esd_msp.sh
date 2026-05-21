@@ -1,6 +1,9 @@
 #!/bin/bash
-##SBATCH --gres=gpu:tesla_v100:1
-#SBATCH --time=3-00:00:00
+## SBATCH --gpus=1
+## SBATCH --mem=16G
+## SBATCH --time=03:00:00
+
+source /scratch/work/nguyent166/emotion-compensation/gen/venv/bin/activate
 
 #emo
 ATTRIBUTE_NAME=emo

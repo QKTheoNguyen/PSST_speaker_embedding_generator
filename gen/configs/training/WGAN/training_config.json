@@ -1,0 +1,29 @@
+{
+    "model": "mlp_embedding",
+    "z_dim": 100,
+    "size": 192,
+    "nfilter": 64,
+    "nfilter_max": 512,
+    "data_dim": [
+        1,
+        1,
+        192
+    ],
+    "batch_size": 64,
+    "learning_rate": 0.0002,
+    "betas": [
+        0.0,
+        0.9
+    ],
+    "epochs": 3,
+    "n_max_iterations": 3900,
+    "gamma": 0.1,
+    "K": -1,
+    "milestones": [
+        1950,
+        3120
+    ],
+    "lr_anneal": 0.8,
+    "checkpoint_interval": 5000,
+    "save_epoch_interval": 50
+}
