@@ -7,6 +7,6 @@
     0.9,
     0.999
   ],
-  "epochs": 50,
+  "epochs": 300,
   "save_epoch_interval": 100
 }

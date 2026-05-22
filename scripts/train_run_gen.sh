@@ -13,7 +13,7 @@ cd ./gen
 
 # anon modes in: flow, gan
 anon_mode=gan
-epochs=3
+epochs=300
 
 # HiFiGAN model
 model_type=libri_tts_clean_100_fbank_xv_ssl_freeze
